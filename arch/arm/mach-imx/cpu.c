@@ -148,11 +148,21 @@ unsigned imx_ddr_size(void)
 	unsigned misc = readl(&mem->misc);
 	int bits = 11 + 0 + 0 + 1;      /* row + col + bank + width */
 
-	bits += ESD_MMDC_CTL_GET_ROW(ctl);
-	bits += col_lookup[ESD_MMDC_CTL_GET_COLUMN(ctl)];
-	bits += bank_lookup[ESD_MMDC_MISC_GET_BANK(misc)];
-	bits += ESD_MMDC_CTL_GET_WIDTH(ctl);
-	bits += ESD_MMDC_CTL_GET_CS1(ctl);
+	printf( "mmdc_ctl = 0x%x\n", ctl); // mmdc_ctl = 0x84180000
+	printf( "mmdc_misc = 0x%x\n", misc); // mmdc_misc = 0x40201740
+	
+							
+	printf( "ESD_MMDC_CTL_GET_ROW(ctl) = %d\n", ESD_MMDC_CTL_GET_ROW(ctl));
+	printf( "col_lookup[ESD_MMDC_CTL_GET_COLUMN(ctl)] = %d\n", col_lookup[ESD_MMDC_CTL_GET_COLUMN(ctl)]);
+	printf( "bank_lookup[ESD_MMDC_MISC_GET_BANK(misc)] = %d\n", bank_lookup[ESD_MMDC_MISC_GET_BANK(misc)]);
+	printf( "ESD_MMDC_CTL_GET_WIDTH(ctl) = %d\n", ESD_MMDC_CTL_GET_WIDTH(ctl));
+	printf( "ESD_MMDC_CTL_GET_CS1(ctl) = %d\n", ESD_MMDC_CTL_GET_CS1(ctl));
+
+	bits += ESD_MMDC_CTL_GET_ROW(ctl); // 4 -- 15 bits Row    3 -- 14 bits Row
+	bits += col_lookup[ESD_MMDC_CTL_GET_COLUMN(ctl)]; // 10 -- 10 bits column
+	bits += bank_lookup[ESD_MMDC_MISC_GET_BANK(misc)];  //3 -- 8 banks device is being used
+	bits += ESD_MMDC_CTL_GET_WIDTH(ctl); // 0 -- 16-bit data bus
+	bits += ESD_MMDC_CTL_GET_CS1(ctl); // 0  --Disable
 
 	/* The MX6 can do only 3840 MiB of DRAM */
 	if (bits == 32)
